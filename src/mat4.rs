@@ -161,4 +161,16 @@ impl Mat4 {
             Vec4([0.0, 0.0, 0.0, 1.0]),
         ])
     }
+
+    pub fn create_proj(bottom: f32, top: f32, left: f32, right: f32, near: f32, far: f32) -> Mat4 {
+        let fov = 45f32;
+
+        let fov_ratio = 1f32 / f32::tan(f32::to_radians(fov) / 2.0);
+        Mat4([
+            Vec4([fov_ratio, 0.0, 0.0, 0.0]),
+            Vec4([0.0, fov_ratio, 0.0, 0.0]),
+            Vec4([0.0, 0.0, -far / (far - near), -(far * near) / (far - near)]), // <-- Revise negativity
+            Vec4([0.0, 0.0, -1.0, 0.0]),
+        ])
+    }
 }
