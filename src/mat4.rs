@@ -162,15 +162,23 @@ impl Mat4 {
         ])
     }
 
-    pub fn create_proj(bottom: f32, top: f32, left: f32, right: f32, near: f32, far: f32) -> Mat4 {
-        let fov = 45f32;
+    pub fn create_proj(fov_angles: f32, aspect_ratio: f32, near: f32, far: f32) -> Mat4 {
+        let fov_ratio = near * f32::tan(f32::to_radians(fov_angles) / 2.0);
 
-        let fov_ratio = 1f32 / f32::tan(f32::to_radians(fov) / 2.0);
+        let r = aspect_ratio * fov_ratio;
+        let l = -r;
+        let t = fov_ratio;
+        let b = -t;
         Mat4([
-            Vec4([fov_ratio, 0.0, 0.0, 0.0]),
-            Vec4([0.0, fov_ratio, 0.0, 0.0]),
-            Vec4([0.0, 0.0, -far / (far - near), -(far * near) / (far - near)]), // <-- Revise negativity
-            Vec4([0.0, 0.0, -1.0, 0.0]),
+            Vec4([2f32 * near / (r - l), 0.0, 0.0, 0.0]),
+            Vec4([0.0, 2f32 * near / (t - b), 0.0, 0.0]),
+            Vec4([
+                (r + l) / (r - l),
+                (t + b) / (t - b),
+                -(far + near) / (far - near),
+                -1.0,
+            ]),
+            Vec4([0.0, 0.0, -2.0 * far * near / (far - near), 0.0]),
         ])
     }
 }
