@@ -109,7 +109,7 @@ impl Mat4 {
         ])
     }
 
-    pub fn mul(self, _rhs: &Mat4) -> Mat4 {
+    pub fn mul(&self, _rhs: &Mat4) -> Mat4 {
         let row0 = self.extract_row(0);
         let row1 = self.extract_row(1);
         let row2 = self.extract_row(2);
