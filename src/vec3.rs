@@ -24,6 +24,16 @@ impl Vec3 {
     }
 
     #[inline]
+    pub fn normalize(&self) -> Vec3 {
+        let lensq = self[0] * self[0] + self[1] * self[1] + self[2] * self[2];
+        if lensq == 0.0 {
+            return Vec3([0.0, 0.0, 0.0]);
+        }
+        let lenroot = f32::sqrt(lensq);
+        Vec3([self[0] / lenroot, self[1] / lenroot, self[2] / lenroot])
+    }
+
+    #[inline]
     pub fn dot(&self, b: Vec3) -> f32 {
         self[0] * b[0] + self[1] * b[1] + self[2] * b[2]
     }
