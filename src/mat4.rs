@@ -1,32 +1,10 @@
-use super::Vec4;
-use std::ops::Index;
+use crate::Vec3;
+use crate::Vec4;
+// use std::cmp::Eq;
+use std::ops::{Index, Mul};
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Mat4(pub [Vec4; 4]);
-
-// macro_rules! index_operators {
-//     ($MatrixN:ident, $n:expr, $Output:ty, $I:ty) => {
-//         impl Index<$I> for $MatrixN {
-//             type Output = $Output;
-
-//             #[inline]
-//             fn index<'a>(&'a self, i: $I) -> &'a $Output {
-//                 let v: &[[f32; $n]; $n] = self.as_ref();
-//                 From::from(&v[i])
-//             }
-//         }
-
-//         impl IndexMut<$I> for $MatrixN {
-//             #[inline]
-//             fn index_mut<'a>(&'a mut self, i: $I) -> &'a mut $Output {
-//                 let v: &mut [[f32; $n]; $n] = self.as_mut();
-//                 From::from(&mut v[i])
-//             }
-//         }
-//     }
-// }
-
-// index_operators!(Mat4, 4, Vec4, usize);
 
 impl Index<usize> for Mat4 {
     type Output = Vec4;
@@ -41,6 +19,51 @@ impl Index<usize> for Mat4 {
         }
     }
 }
+
+impl Mul for Mat4 {
+    type Output = Self;
+
+    fn mul(self, rhs: Self) -> Self {
+        let row0 = self.extract_row(0);
+        let row1 = self.extract_row(1);
+        let row2 = self.extract_row(2);
+        let row3 = self.extract_row(3);
+
+        Mat4([
+            Vec4([
+                Vec4::dot(&row0, &rhs[0]),
+                Vec4::dot(&row1, &rhs[0]),
+                Vec4::dot(&row2, &rhs[0]),
+                Vec4::dot(&row3, &rhs[0]),
+            ]),
+            Vec4([
+                Vec4::dot(&row0, &rhs[1]),
+                Vec4::dot(&row1, &rhs[1]),
+                Vec4::dot(&row2, &rhs[1]),
+                Vec4::dot(&row3, &rhs[1]),
+            ]),
+            Vec4([
+                Vec4::dot(&row0, &rhs[2]),
+                Vec4::dot(&row1, &rhs[2]),
+                Vec4::dot(&row2, &rhs[2]),
+                Vec4::dot(&row3, &rhs[2]),
+            ]),
+            Vec4([
+                Vec4::dot(&row0, &rhs[3]),
+                Vec4::dot(&row1, &rhs[3]),
+                Vec4::dot(&row2, &rhs[3]),
+                Vec4::dot(&row3, &rhs[3]),
+            ]),
+        ])
+    }
+}
+// impl Div for Mat4 {
+//     type Output = Self;
+
+//     fn div(&self, rhs: Self) -> Self {
+
+//     }
+// }
 
 //Mat4 is considered a column-major matrix
 impl Mat4 {
@@ -109,40 +132,6 @@ impl Mat4 {
         ])
     }
 
-    pub fn mul(&self, _rhs: &Mat4) -> Mat4 {
-        let row0 = self.extract_row(0);
-        let row1 = self.extract_row(1);
-        let row2 = self.extract_row(2);
-        let row3 = self.extract_row(3);
-
-        Mat4([
-            Vec4([
-                Vec4::dot(&row0, &_rhs[0]),
-                Vec4::dot(&row1, &_rhs[0]),
-                Vec4::dot(&row2, &_rhs[0]),
-                Vec4::dot(&row3, &_rhs[0]),
-            ]),
-            Vec4([
-                Vec4::dot(&row0, &_rhs[1]),
-                Vec4::dot(&row1, &_rhs[1]),
-                Vec4::dot(&row2, &_rhs[1]),
-                Vec4::dot(&row3, &_rhs[1]),
-            ]),
-            Vec4([
-                Vec4::dot(&row0, &_rhs[2]),
-                Vec4::dot(&row1, &_rhs[2]),
-                Vec4::dot(&row2, &_rhs[2]),
-                Vec4::dot(&row3, &_rhs[2]),
-            ]),
-            Vec4([
-                Vec4::dot(&row0, &_rhs[3]),
-                Vec4::dot(&row1, &_rhs[3]),
-                Vec4::dot(&row2, &_rhs[3]),
-                Vec4::dot(&row3, &_rhs[3]),
-            ]),
-        ])
-    }
-
     pub fn create_ortho(bottom: f32, top: f32, left: f32, right: f32, near: f32, far: f32) -> Mat4 {
         Mat4([
             Vec4([
@@ -181,4 +170,190 @@ impl Mat4 {
             Vec4([0.0, 0.0, -2.0 * far * near / (far - near), 0.0]),
         ])
     }
+
+    pub fn create_lookat(from: Vec3, to: Vec3, up: Vec3) -> Mat4 {
+        let dir_fwd = (to - from).normalize();
+        let dir_up = up.normalize();
+        let dir_right = dir_fwd.cross(dir_up).normalize();
+        let dir_fwd = dir_up.cross(dir_right);
+        Mat4([
+            Vec4([dir_right[0], dir_right[1], dir_right[2], 0.0]),
+            Vec4([dir_up[0], dir_up[1], dir_up[2], 0.0]),
+            Vec4([-dir_fwd[0], -dir_fwd[1], -dir_fwd[2], 0.0]),
+            Vec4([from[0], from[1], from[2], 1.0]),
+        ])
+    }
+
+    pub fn calc_det(&self) -> f32 {
+        self[0][0] * self[1][1] * self[2][2] * self[3][3]
+            + self[0][0] * self[1][2] * self[2][3] * self[3][1]
+            + self[0][0] * self[1][3] * self[2][1] * self[3][2]
+            + self[0][1] * self[1][0] * self[2][3] * self[3][2]
+            + self[0][1] * self[1][2] * self[2][0] * self[3][3]
+            + self[0][1] * self[1][3] * self[2][2] * self[3][0]
+            + self[0][2] * self[1][0] * self[2][1] * self[3][3]
+            + self[0][2] * self[1][1] * self[2][3] * self[3][0]
+            + self[0][2] * self[1][3] * self[2][0] * self[3][1]
+            + self[0][3] * self[1][0] * self[2][2] * self[3][1]
+            + self[0][3] * self[1][1] * self[2][0] * self[3][2]
+            + self[0][3] * self[1][2] * self[2][1] * self[3][0]
+            - self[0][0] * self[1][1] * self[2][3] * self[3][2]
+            - self[0][0] * self[1][2] * self[2][1] * self[3][3]
+            - self[0][0] * self[1][3] * self[2][2] * self[3][1]
+            - self[0][1] * self[1][0] * self[2][2] * self[3][3]
+            - self[0][1] * self[1][2] * self[2][3] * self[3][0]
+            - self[0][1] * self[1][3] * self[2][0] * self[3][2]
+            - self[0][2] * self[1][0] * self[2][3] * self[3][1]
+            - self[0][2] * self[1][1] * self[2][0] * self[3][3]
+            - self[0][2] * self[1][3] * self[2][1] * self[3][0]
+            - self[0][3] * self[1][0] * self[2][1] * self[3][2]
+            - self[0][3] * self[1][1] * self[2][2] * self[3][0]
+            - self[0][3] * self[1][2] * self[2][0] * self[3][1]
+    }
+
+    pub fn calc_inv_det(&self) -> f32 {
+        1.0f32 / self.calc_det()
+    }
+
+    pub fn inverse(&self) -> Self {
+        let inv_det = self.calc_inv_det();
+        Self([
+            Vec4([
+                (self[1][1] * self[2][2] * self[3][3]
+                    + self[1][2] * self[2][3] * self[3][1]
+                    + self[1][3] * self[2][1] * self[3][2]
+                    - self[1][1] * self[2][3] * self[3][2]
+                    - self[1][2] * self[2][1] * self[3][3]
+                    - self[1][3] * self[2][2] * self[3][1])
+                    * inv_det,
+                (self[0][1] * self[2][3] * self[3][2]
+                    + self[0][2] * self[2][1] * self[3][3]
+                    + self[0][3] * self[2][2] * self[3][1]
+                    - self[0][1] * self[2][2] * self[3][3]
+                    - self[0][2] * self[2][3] * self[3][1]
+                    - self[0][3] * self[2][1] * self[3][2])
+                    * inv_det,
+                (self[0][1] * self[1][2] * self[3][3]
+                    + self[0][2] * self[1][3] * self[3][1]
+                    + self[0][3] * self[1][1] * self[3][2]
+                    - self[0][1] * self[1][3] * self[3][2]
+                    - self[0][2] * self[1][1] * self[3][3]
+                    - self[0][3] * self[1][2] * self[3][1])
+                    * inv_det,
+                (self[0][1] * self[1][3] * self[2][2]
+                    + self[0][2] * self[1][1] * self[2][3]
+                    + self[0][3] * self[1][2] * self[2][1]
+                    - self[0][1] * self[1][2] * self[2][3]
+                    - self[0][2] * self[1][3] * self[2][1]
+                    - self[0][3] * self[1][1] * self[2][2])
+                    * inv_det,
+            ]),
+            Vec4([
+                (self[1][0] * self[2][3] * self[3][2]
+                    + self[1][2] * self[2][0] * self[3][3]
+                    + self[1][3] * self[2][2] * self[3][0]
+                    - self[1][0] * self[2][2] * self[3][3]
+                    - self[1][2] * self[2][3] * self[3][0]
+                    - self[1][3] * self[2][0] * self[3][2])
+                    * inv_det,
+                (self[0][0] * self[2][2] * self[3][3]
+                    + self[0][2] * self[2][3] * self[3][0]
+                    + self[0][3] * self[2][0] * self[3][2]
+                    - self[0][0] * self[2][3] * self[3][2]
+                    - self[0][2] * self[2][0] * self[3][3]
+                    - self[0][3] * self[2][2] * self[3][0])
+                    * inv_det,
+                (self[0][0] * self[1][3] * self[3][2]
+                    + self[0][2] * self[1][0] * self[3][3]
+                    + self[0][3] * self[1][2] * self[3][0]
+                    - self[0][0] * self[1][2] * self[3][3]
+                    - self[0][2] * self[1][3] * self[3][0]
+                    - self[0][3] * self[1][0] * self[3][2])
+                    * inv_det,
+                (self[0][0] * self[1][2] * self[2][3]
+                    + self[0][2] * self[1][3] * self[2][0]
+                    + self[0][3] * self[1][0] * self[2][2]
+                    - self[0][0] * self[1][3] * self[2][2]
+                    - self[0][2] * self[1][0] * self[2][3]
+                    - self[0][3] * self[1][2] * self[2][0])
+                    * inv_det,
+            ]),
+            Vec4([
+                (self[1][0] * self[2][1] * self[3][3]
+                    + self[1][1] * self[2][3] * self[3][0]
+                    + self[1][3] * self[2][0] * self[3][1]
+                    - self[1][0] * self[2][3] * self[3][1]
+                    - self[1][1] * self[2][0] * self[3][3]
+                    - self[1][3] * self[2][1] * self[3][0])
+                    * inv_det,
+                (self[0][0] * self[2][3] * self[3][1]
+                    + self[0][1] * self[2][0] * self[3][3]
+                    + self[0][3] * self[2][1] * self[3][0]
+                    - self[0][0] * self[2][1] * self[3][3]
+                    - self[0][1] * self[2][3] * self[3][0]
+                    - self[0][3] * self[2][0] * self[3][1])
+                    * inv_det,
+                (self[0][0] * self[1][1] * self[3][3]
+                    + self[0][1] * self[1][3] * self[3][0]
+                    + self[0][3] * self[1][0] * self[3][1]
+                    - self[0][0] * self[1][3] * self[3][1]
+                    - self[0][1] * self[1][0] * self[3][3]
+                    - self[0][3] * self[1][1] * self[3][0])
+                    * inv_det,
+                (self[0][0] * self[1][3] * self[2][1]
+                    + self[0][1] * self[1][0] * self[2][3]
+                    + self[0][3] * self[1][1] * self[2][0]
+                    - self[0][0] * self[1][1] * self[2][3]
+                    - self[0][1] * self[1][3] * self[2][0]
+                    - self[0][3] * self[1][0] * self[2][1])
+                    * inv_det,
+            ]),
+            Vec4([
+                (self[1][0] * self[2][2] * self[3][1]
+                    + self[1][1] * self[2][0] * self[3][2]
+                    + self[1][2] * self[2][1] * self[3][0]
+                    - self[1][0] * self[2][1] * self[3][2]
+                    - self[1][1] * self[2][2] * self[3][0]
+                    - self[1][2] * self[2][0] * self[3][1])
+                    * inv_det,
+                (self[0][0] * self[2][1] * self[3][2]
+                    + self[0][1] * self[2][2] * self[3][0]
+                    + self[0][2] * self[2][0] * self[3][1]
+                    - self[0][0] * self[2][2] * self[3][1]
+                    - self[0][1] * self[2][0] * self[3][2]
+                    - self[0][2] * self[2][1] * self[3][0])
+                    * inv_det,
+                (self[0][0] * self[1][2] * self[3][1]
+                    + self[0][1] * self[1][0] * self[3][2]
+                    + self[0][2] * self[1][1] * self[3][0]
+                    - self[0][0] * self[1][1] * self[3][2]
+                    - self[0][1] * self[1][2] * self[3][0]
+                    - self[0][2] * self[1][0] * self[3][1])
+                    * inv_det,
+                (self[0][0] * self[1][1] * self[2][2]
+                    + self[0][1] * self[1][2] * self[2][0]
+                    + self[0][2] * self[1][0] * self[2][1]
+                    - self[0][0] * self[1][2] * self[2][1]
+                    - self[0][1] * self[1][0] * self[2][2]
+                    - self[0][2] * self[1][1] * self[2][0])
+                    * inv_det,
+            ]),
+        ])
+    }
 }
+
+// #[test]
+// fn test_inverse() {
+//     let orig_mat4 = Mat4([
+//         Vec4([22.2, 1.1, 4.4, 11.0]),
+//         Vec4([2.2, 33.1, 44.4, 11.330]),
+//         Vec4([2.52, 11.1, 4.255, 151.0]),
+//         Vec4([233.2, 1.1321, 5.4, 11.0]),
+//     ]);
+//     let inv_mat4 = orig_mat4.inverse();
+//     let multiplied = orig_mat4 * inv_mat4;
+
+//     let ident = Mat4::identity();
+//     //These are not equal since of approximations and whatnot, whatever...
+//     assert_eq!(multiplied, ident);
+// }
