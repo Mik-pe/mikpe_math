@@ -20,43 +20,43 @@ impl Index<usize> for Mat4 {
     }
 }
 
-impl Mul for Mat4 {
-    type Output = Self;
+// impl Mul for Mat4 {
+//     type Output = Self;
 
-    fn mul(self, rhs: Self) -> Self {
-        let row0 = self.extract_row(0);
-        let row1 = self.extract_row(1);
-        let row2 = self.extract_row(2);
-        let row3 = self.extract_row(3);
+//     fn mul(self, rhs: Self) -> Self {
+//         let row0 = self.extract_row(0);
+//         let row1 = self.extract_row(1);
+//         let row2 = self.extract_row(2);
+//         let row3 = self.extract_row(3);
 
-        Mat4([
-            Vec4([
-                Vec4::dot(&row0, &rhs[0]),
-                Vec4::dot(&row1, &rhs[0]),
-                Vec4::dot(&row2, &rhs[0]),
-                Vec4::dot(&row3, &rhs[0]),
-            ]),
-            Vec4([
-                Vec4::dot(&row0, &rhs[1]),
-                Vec4::dot(&row1, &rhs[1]),
-                Vec4::dot(&row2, &rhs[1]),
-                Vec4::dot(&row3, &rhs[1]),
-            ]),
-            Vec4([
-                Vec4::dot(&row0, &rhs[2]),
-                Vec4::dot(&row1, &rhs[2]),
-                Vec4::dot(&row2, &rhs[2]),
-                Vec4::dot(&row3, &rhs[2]),
-            ]),
-            Vec4([
-                Vec4::dot(&row0, &rhs[3]),
-                Vec4::dot(&row1, &rhs[3]),
-                Vec4::dot(&row2, &rhs[3]),
-                Vec4::dot(&row3, &rhs[3]),
-            ]),
-        ])
-    }
-}
+//         Mat4([
+//             Vec4([
+//                 Vec4::dot(&row0, &rhs[0]),
+//                 Vec4::dot(&row1, &rhs[0]),
+//                 Vec4::dot(&row2, &rhs[0]),
+//                 Vec4::dot(&row3, &rhs[0]),
+//             ]),
+//             Vec4([
+//                 Vec4::dot(&row0, &rhs[1]),
+//                 Vec4::dot(&row1, &rhs[1]),
+//                 Vec4::dot(&row2, &rhs[1]),
+//                 Vec4::dot(&row3, &rhs[1]),
+//             ]),
+//             Vec4([
+//                 Vec4::dot(&row0, &rhs[2]),
+//                 Vec4::dot(&row1, &rhs[2]),
+//                 Vec4::dot(&row2, &rhs[2]),
+//                 Vec4::dot(&row3, &rhs[2]),
+//             ]),
+//             Vec4([
+//                 Vec4::dot(&row0, &rhs[3]),
+//                 Vec4::dot(&row1, &rhs[3]),
+//                 Vec4::dot(&row2, &rhs[3]),
+//                 Vec4::dot(&row3, &rhs[3]),
+//             ]),
+//         ])
+//     }
+// }
 // impl Div for Mat4 {
 //     type Output = Self;
 
@@ -129,6 +129,40 @@ impl Mat4 {
             Vec4([0.0, 1.0, 0.0, 0.0]),
             Vec4([0.0, 0.0, 1.0, 0.0]),
             Vec4([0.0, 0.0, 0.0, 1.0]),
+        ])
+    }
+
+    pub fn mul(&self, _rhs: &Mat4) -> Mat4 {
+        let row0 = self.extract_row(0);
+        let row1 = self.extract_row(1);
+        let row2 = self.extract_row(2);
+        let row3 = self.extract_row(3);
+
+        Mat4([
+            Vec4([
+                Vec4::dot(&row0, &_rhs[0]),
+                Vec4::dot(&row1, &_rhs[0]),
+                Vec4::dot(&row2, &_rhs[0]),
+                Vec4::dot(&row3, &_rhs[0]),
+            ]),
+            Vec4([
+                Vec4::dot(&row0, &_rhs[1]),
+                Vec4::dot(&row1, &_rhs[1]),
+                Vec4::dot(&row2, &_rhs[1]),
+                Vec4::dot(&row3, &_rhs[1]),
+            ]),
+            Vec4([
+                Vec4::dot(&row0, &_rhs[2]),
+                Vec4::dot(&row1, &_rhs[2]),
+                Vec4::dot(&row2, &_rhs[2]),
+                Vec4::dot(&row3, &_rhs[2]),
+            ]),
+            Vec4([
+                Vec4::dot(&row0, &_rhs[3]),
+                Vec4::dot(&row1, &_rhs[3]),
+                Vec4::dot(&row2, &_rhs[3]),
+                Vec4::dot(&row3, &_rhs[3]),
+            ]),
         ])
     }
 
@@ -351,7 +385,7 @@ impl Mat4 {
 //         Vec4([233.2, 1.1321, 5.4, 11.0]),
 //     ]);
 //     let inv_mat4 = orig_mat4.inverse();
-//     let multiplied = orig_mat4 * inv_mat4;
+//     let multiplied = orig_mat4.mul(&inv_mat4);
 
 //     let ident = Mat4::identity();
 //     //These are not equal since of approximations and whatnot, whatever...
