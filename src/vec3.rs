@@ -1,4 +1,4 @@
-use std::ops::{Add, Index, Sub};
+use std::ops::{Add, Index, IndexMut, Sub};
 
 #[derive(Debug, Copy, Clone)]
 pub struct Vec3(pub [f32; 3]);
@@ -10,6 +10,16 @@ impl Index<usize> for Vec3 {
             0 => &self.0[0],
             1 => &self.0[1],
             2 => &self.0[2],
+            _ => panic!("INDEXING OUT_OF_BOUNDS in Vec3"),
+        }
+    }
+}
+impl IndexMut<usize> for Vec3 {
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        match index {
+            0 => &mut self.0[0],
+            1 => &mut self.0[1],
+            2 => &mut self.0[2],
             _ => panic!("INDEXING OUT_OF_BOUNDS in Vec3"),
         }
     }
