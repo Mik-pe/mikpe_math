@@ -1,7 +1,9 @@
+use no_std_compat::ops::Index;
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Vec4(pub [f32; 4]);
 
-impl std::ops::Index<usize> for Vec4 {
+impl Index<usize> for Vec4 {
     type Output = f32;
 
     fn index(&self, index: usize) -> &f32 {

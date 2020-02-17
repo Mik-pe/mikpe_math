@@ -1,7 +1,9 @@
 use crate::Vec3;
 use crate::Vec4;
 // use std::cmp::Eq;
-use std::ops::{Index, Mul};
+#[allow(unused_imports)]
+use micromath::F32Ext;
+use no_std_compat::ops::Index;
 
 #[derive(Debug, PartialEq)]
 pub struct Mat4(pub [Vec4; 4]);
