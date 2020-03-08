@@ -51,6 +51,11 @@ impl Vec3 {
     }
 
     #[inline]
+    pub fn mul(&self, _rhs: f32) -> Vec3 {
+        Vec3([self[0] * _rhs, self[1] * _rhs, self[2] * _rhs])
+    }
+
+    #[inline]
     pub fn normalize(&self) -> Vec3 {
         let lensq = self[0] * self[0] + self[1] * self[1] + self[2] * self[2];
         if lensq == 0.0 {
