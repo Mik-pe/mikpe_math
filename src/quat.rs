@@ -1,8 +1,10 @@
+use no_std_compat::ops::Index;
+
 #[derive(Debug)]
 #[allow(dead_code)]
 pub struct Quat(pub [f32; 4]);
 
-impl std::ops::Index<usize> for Quat {
+impl Index<usize> for Quat {
     type Output = f32;
     fn index(&self, index: usize) -> &f32 {
         match index {
