@@ -5,7 +5,7 @@ use crate::Vec4;
 use micromath::F32Ext;
 use no_std_compat::ops::Index;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Mat4(pub [Vec4; 4]);
 
 impl Index<usize> for Mat4 {
