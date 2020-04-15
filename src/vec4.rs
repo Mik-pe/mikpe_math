@@ -17,6 +17,12 @@ impl Index<usize> for Vec4 {
     }
 }
 
+impl Into<[f32; 4]> for Vec4 {
+    fn into(self) -> [f32; 4] {
+        self.0
+    }
+}
+
 impl Vec4 {
     #[inline]
     pub fn from_xyz(x: f32, y: f32, z: f32) -> Vec4 {
@@ -37,5 +43,14 @@ impl Vec4 {
     #[inline]
     pub fn dot(a: &Vec4, b: &Vec4) -> f32 {
         a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3]
+    }
+}
+
+#[test]
+fn test_into() {
+    let v = Vec4::from_xyz(1.0, 2.0, 3.0);
+    {
+        let v: [f32; 4] = v.into();
+        assert_eq!(v, [1.0, 2.0, 3.0, 1.0]);
     }
 }

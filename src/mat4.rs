@@ -378,6 +378,36 @@ impl Mat4 {
     }
 }
 
+impl Into<[[f32; 4]; 4]> for Mat4 {
+    fn into(self) -> [[f32; 4]; 4] {
+        let vec_arr = self.0;
+        let f_arr = [
+            vec_arr[0].into(),
+            vec_arr[1].into(),
+            vec_arr[2].into(),
+            vec_arr[3].into(),
+        ];
+        f_arr
+    }
+}
+
+#[test]
+fn test_into() {
+    let mat = Mat4::new();
+    {
+        let mat: [[f32; 4]; 4] = mat.into();
+        assert_eq!(
+            mat,
+            [
+                [1.0, 0.0, 0.0, 0.0],
+                [0.0, 1.0, 0.0, 0.0],
+                [0.0, 0.0, 1.0, 0.0],
+                [0.0, 0.0, 0.0, 1.0]
+            ]
+        );
+    }
+}
+
 // #[test]
 // fn test_inverse() {
 //     let orig_mat4 = Mat4([
