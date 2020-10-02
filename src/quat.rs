@@ -1,4 +1,4 @@
-use no_std_compat::ops::Index;
+use core::ops::Index;
 
 #[derive(Debug)]
 #[allow(dead_code)]

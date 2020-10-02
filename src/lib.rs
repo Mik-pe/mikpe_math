@@ -1,5 +1,4 @@
 #![allow(dead_code)]
-#![no_std]
 
 pub mod mat4;
 pub mod quat;
@@ -39,8 +38,20 @@ pub fn mat4_mul_vec4(a: &Mat4, b: &Vec4) -> Vec4 {
 
 #[cfg(test)]
 mod tests {
+    use super::{Mat4, Vec3, Vec4};
+
     #[test]
     fn it_works() {
         assert_eq!(2 + 2, 4);
+    }
+
+    #[test]
+    fn multplication_tests() {
+        let pi = core::f32::consts::PI;
+        let mat = Mat4::from_rotaxis(&(pi * 2000.32323), [0.0, -1.0, 0.0]);
+        let v = Vec3::new(0.0, 0.0, 1.0);
+        let res = super::mat4_mul_vec3(&mat, &v);
+
+        panic!("Foo! {:?}", res);
     }
 }

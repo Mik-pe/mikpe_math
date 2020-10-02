@@ -1,4 +1,4 @@
-use no_std_compat::ops::Index;
+use core::ops::Index;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Vec4(pub [f32; 4]);

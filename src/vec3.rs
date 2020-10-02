@@ -1,7 +1,5 @@
-use no_std_compat::ops::{Add, Index, IndexMut, Sub};
+use core::ops::{Add, Index, IndexMut, Sub};
 
-#[allow(unused_imports)]
-use micromath::F32Ext;
 #[derive(Debug, Copy, Clone)]
 pub struct Vec3(pub [f32; 3]);
 
