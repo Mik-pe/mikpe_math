@@ -211,7 +211,7 @@ impl Mat4 {
         let dir_fwd = (to - from).normalize();
         let dir_up = up.normalize();
         let dir_right = dir_fwd.cross(dir_up).normalize();
-        let dir_fwd = dir_up.cross(dir_right);
+        let dir_up = dir_right.cross(dir_fwd).normalize();
         Mat4([
             Vec4([dir_right[0], dir_right[1], dir_right[2], 0.0]),
             Vec4([dir_up[0], dir_up[1], dir_up[2], 0.0]),
