@@ -2,11 +2,13 @@
 
 pub mod mat4;
 pub mod quat;
+pub mod sphere;
 pub mod vec3;
 pub mod vec4;
 
 pub use self::mat4::Mat4;
 pub use self::quat::Quat;
+pub use self::sphere::Sphere;
 pub use self::vec3::Vec3;
 pub use self::vec4::Vec4;
 
@@ -34,24 +36,4 @@ pub fn mat4_mul_vec4(a: &Mat4, b: &Vec4) -> Vec4 {
         Vec4::dot(&row2, &b),
         Vec4::dot(&row3, &b),
     ])
-}
-
-#[cfg(test)]
-mod tests {
-    use super::{Mat4, Vec3, Vec4};
-
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-
-    #[test]
-    fn multplication_tests() {
-        let pi = core::f32::consts::PI;
-        let mat = Mat4::from_rotaxis(&(pi * 2000.32323), [0.0, -1.0, 0.0]);
-        let v = Vec3::new(0.0, 0.0, 1.0);
-        let res = super::mat4_mul_vec3(&mat, &v);
-
-        panic!("Foo! {:?}", res);
-    }
 }

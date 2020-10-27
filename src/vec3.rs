@@ -65,6 +65,14 @@ impl Vec3 {
         Vec3([self[0] / lenroot, self[1] / lenroot, self[2] / lenroot])
     }
 
+    pub fn distance_squared(&self) -> f32 {
+        self[0] * self[0] + self[1] * self[1] + self[2] * self[2]
+    }
+
+    pub fn distance(&self) -> f32 {
+        self.distance_squared().sqrt()
+    }
+
     #[inline]
     pub fn dot(&self, b: Vec3) -> f32 {
         self[0] * b[0] + self[1] * b[1] + self[2] * b[2]
