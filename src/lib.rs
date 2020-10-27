@@ -1,11 +1,13 @@
 #![allow(dead_code)]
 
+pub mod aabb;
 pub mod mat4;
 pub mod quat;
 pub mod sphere;
 pub mod vec3;
 pub mod vec4;
 
+pub use self::aabb::AABB;
 pub use self::mat4::Mat4;
 pub use self::quat::Quat;
 pub use self::sphere::Sphere;
