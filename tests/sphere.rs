@@ -46,3 +46,10 @@ fn test_intersect() {
     let sphere2 = Sphere::new(Vec3::new(0.0, 0.0, 12.0), 1.0);
     assert_eq!(sphere1.intersects(&sphere2), false);
 }
+
+#[test]
+fn test_into() {
+    let list_of_verts: Vec<[f32; 3]> = vec![[0.0, 0.0, 1.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]];
+    let sphere = Sphere::create_from_verts(&list_of_verts);
+    assert_eq!(sphere.radius, 0.5);
+}

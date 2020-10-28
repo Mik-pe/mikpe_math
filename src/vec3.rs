@@ -39,6 +39,24 @@ impl Add for Vec3 {
     }
 }
 
+// impl From<[f32; 3]> for Vec3 {
+//     fn from(other: [f32; 3]) -> Self {
+//         Self(other)
+//     }
+// }
+
+impl Into<Vec3> for [f32; 3] {
+    fn into(self) -> Vec3 {
+        Vec3(self)
+    }
+}
+
+impl<'a> From<&'a [f32; 3]> for &'a Vec3 {
+    fn from(other: &'a [f32; 3]) -> &'a Vec3 {
+        unsafe { std::mem::transmute(other) }
+    }
+}
+
 impl Vec3 {
     #[inline]
     pub fn new(x: f32, y: f32, z: f32) -> Vec3 {

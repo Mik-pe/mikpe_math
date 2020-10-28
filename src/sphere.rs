@@ -32,12 +32,18 @@ impl Sphere {
         dist_sq <= radius_sum * radius_sum
     }
 
-    pub fn create_from_verts(verts: &[Vec3]) -> Self {
+    //Create a bounding sphere from a slice that can be made into a vec3
+    pub fn create_from_verts<'a, I, T: 'a>(verts: I) -> Self
+    where
+        I: IntoIterator<Item = &'a T>,
+        &'a T: Into<&'a Vec3>,
+    {
         let mut min = Vec3::new(f32::MAX, f32::MAX, f32::MAX);
         let mut max = Vec3::new(f32::MIN, f32::MIN, f32::MIN);
 
         //Bruteforcing is ok sometimes!
-        for vert in verts {
+        for t_vert in verts {
+            let vert: &'a Vec3 = t_vert.into();
             if vert[0] > max[0] {
                 max[0] = vert[0];
             }
@@ -65,4 +71,38 @@ impl Sphere {
 
         Self { center, radius }
     }
+
+    // pub fn create_from_verts(verts: &[Vec3]) -> Self {
+    //     let mut min = Vec3::new(f32::MAX, f32::MAX, f32::MAX);
+    //     let mut max = Vec3::new(f32::MIN, f32::MIN, f32::MIN);
+
+    //     //Bruteforcing is ok sometimes!
+    //     for vert in verts {
+    //         if vert[0] > max[0] {
+    //             max[0] = vert[0];
+    //         }
+    //         if vert[1] > max[1] {
+    //             max[1] = vert[1];
+    //         }
+    //         if vert[2] > max[2] {
+    //             max[2] = vert[2];
+    //         }
+
+    //         if vert[0] < min[0] {
+    //             min[0] = vert[0];
+    //         }
+    //         if vert[1] < min[1] {
+    //             min[1] = vert[1];
+    //         }
+    //         if vert[2] < min[2] {
+    //             min[2] = vert[2];
+    //         }
+    //     }
+
+    //     let extent = (max - min).mul(0.5);
+    //     let center = min + extent;
+    //     let radius = extent.distance();
+
+    //     Self { center, radius }
+    // }
 }
