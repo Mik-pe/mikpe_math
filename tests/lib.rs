@@ -1,4 +1,3 @@
-use mikpe_math::*;
-
 mod aabb;
+mod quat;
 mod sphere;

@@ -1,4 +1,8 @@
-use core::ops::{Add, Index, IndexMut, Sub};
+use core::{
+    f32,
+    ops::{Add, Index, IndexMut, Sub},
+};
+use std::ops::Mul;
 
 #[derive(Debug, Copy, Clone)]
 pub struct Vec3(pub [f32; 3]);
@@ -38,12 +42,6 @@ impl Add for Vec3 {
         Self([self[0] + other[0], self[1] + other[1], self[2] + other[2]])
     }
 }
-
-// impl From<[f32; 3]> for Vec3 {
-//     fn from(other: [f32; 3]) -> Self {
-//         Self(other)
-//     }
-// }
 
 impl Into<Vec3> for [f32; 3] {
     fn into(self) -> Vec3 {
@@ -106,13 +104,18 @@ impl Vec3 {
     }
 }
 
-#[test]
-fn test_cross() {
-    use crate::Vec3;
-    let x_axis = Vec3::new(1.0, 0.0, 0.0);
-    let y_axis = Vec3::new(0.0, 1.0, 0.0);
-    let cross_product = x_axis.cross(y_axis);
-    assert_eq!(cross_product[0], 0.0);
-    assert_eq!(cross_product[1], 0.0);
-    assert_eq!(cross_product[2], 1.0);
+impl Mul<Vec3> for f32 {
+    type Output = Vec3;
+
+    fn mul(self, rhs: Vec3) -> Self::Output {
+        Vec3([self * rhs[0], self * rhs[1], self * rhs[2]])
+    }
+}
+
+impl Mul<f32> for Vec3 {
+    type Output = Vec3;
+
+    fn mul(self, rhs: f32) -> Self::Output {
+        Vec3([self[0] * rhs, self[1] * rhs, self[2] * rhs])
+    }
 }

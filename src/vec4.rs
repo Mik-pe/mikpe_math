@@ -45,12 +45,3 @@ impl Vec4 {
         a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3]
     }
 }
-
-#[test]
-fn test_into() {
-    let v = Vec4::from_xyz(1.0, 2.0, 3.0);
-    {
-        let v: [f32; 4] = v.into();
-        assert_eq!(v, [1.0, 2.0, 3.0, 1.0]);
-    }
-}
