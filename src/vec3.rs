@@ -104,6 +104,14 @@ impl Vec3 {
     }
 }
 
+impl Mul for Vec3 {
+    type Output = Vec3;
+
+    fn mul(self, rhs: Self) -> Self::Output {
+        Vec3([self[0] * rhs[0], self[1] * rhs[1], self[2] * rhs[2]])
+    }
+}
+
 impl Mul<Vec3> for f32 {
     type Output = Vec3;
 

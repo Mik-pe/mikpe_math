@@ -1,6 +1,8 @@
 use crate::Vec3;
 use crate::Vec4;
 use core::ops::Index;
+
+/// Mat4 is considered a column-major matrix, constructed using 4 Vec4s
 #[derive(Debug, Clone, PartialEq)]
 pub struct Mat4(pub [Vec4; 4]);
 

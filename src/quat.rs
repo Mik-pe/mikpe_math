@@ -79,6 +79,13 @@ impl Quat {
         }
     }
 
+    pub fn dot(&self, rhs: Quat) -> f32 {
+        let q1_v = Vec3::new(self.x, self.y, self.z);
+        let q2_v = Vec3::new(rhs.x, rhs.y, rhs.z);
+        let scalar_dot = q1_v.dot(q2_v);
+        scalar_dot + self.w * rhs.w
+    }
+
     pub fn rotate_vec3(&self, v: Vec3) -> Vec3 {
         let u = Vec3::new(self.x, self.y, self.z);
         let s = self.w;
@@ -128,6 +135,21 @@ impl Quat {
             Vec4([m20, m21, m22, m23]),
             Vec4([m30, m31, m32, m33]),
         ])
+    }
+}
+impl Mul for Quat {
+    type Output = Quat;
+
+    fn mul(self, other: Quat) -> Self::Output {
+        assert!(self.is_normalized());
+        assert!(other.is_normalized());
+
+        Self {
+            x: self.w * other.x + self.x * other.w + self.y * other.z - self.z * other.y,
+            y: self.w * other.y - self.x * other.z + self.y * other.w + self.z * other.x,
+            z: self.w * other.z + self.x * other.y - self.y * other.x + self.z * other.w,
+            w: self.w * other.w - self.x * other.x - self.y * other.y - self.z * other.z,
+        }
     }
 }
 
